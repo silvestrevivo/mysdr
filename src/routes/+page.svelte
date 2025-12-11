@@ -2,10 +2,6 @@
   import { Calendar, CallDetails, Card, Form, SlotsAvailable } from '$lib';
   import { slotsStore } from '$stores/slots.svelte';
   import cn from '$utils/cn';
-
-  let columns = $derived(
-    slotsStore.slotsSelected ? 'lg:grid-cols-3' : 'lg:grid-cols-4',
-  );
 </script>
 
 <div
@@ -22,7 +18,7 @@
     <div
       class={cn(
         'flex flex-col lg:grid gap-2 lg:grid-cols-4 h-[calc(100%-4rem)] lg:h-auto',
-        columns,
+        slotsStore.slotsSelected && 'lg:grid-cols-3',
       )}
     >
       <Card>

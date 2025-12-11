@@ -4,7 +4,7 @@
   import { slotsStore } from '$stores/slots.svelte';
   import { ArrowLeftIcon } from 'lucide-svelte';
 
-  // import type { SubmitFunction } from '@sveltejs/kit';
+  import type { SubmitFunction } from '@sveltejs/kit';
 
   let loading = $state(false);
   let formError = $state({
@@ -12,6 +12,40 @@
     error: false,
     name: false,
   });
+
+  const handleSubmit: SubmitFunction = ({
+    cancel,
+    formData,
+  }: {
+    cancel: () => void;
+    formData: FormData;
+  }) => {
+    loading = true;
+    const name = formData.get('name');
+    const email = formData.get('email');
+
+    if (!name) {
+      formError.name = true;
+
+      loading = false;
+      cancel();
+    }
+    if (!email) {
+      formError.email = true;
+      loading = false;
+      cancel();
+    }
+
+    return async ({ result, update }) => {
+      if (result.type === 'failure') {
+        formError.error = result.data?.error;
+      } else if (result.type === 'success') {
+        slotsStore.setSlotSelected(undefined);
+        await update();
+      }
+      loading = false;
+    };
+  };
 </script>
 
 <svelte:window
